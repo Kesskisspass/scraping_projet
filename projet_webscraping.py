@@ -4,26 +4,30 @@
 
 import requests
 import pyexcel as pe
+from pyexcel_ods3 import save_data
 from bs4 import BeautifulSoup
 
 scrapped_list = []
-files = ['computers/laptops','computers/tablets','phones/touch']
-for i in range(len(files)):
-    print(f'https://www.webscraper.io/test-sites/e-commerce/allinone/{files[i]}')
+types = ['laptops','laptops','touch']
+files = {'laptops':'computers/laptops','laptops':'computers/tablets','touch':'phones/touch'}
 
-allinone_response = requests.get('https://www.webscraper.io/test-sites/e-commerce/allinone/computers/laptops')
-soup = BeautifulSoup(allinone_response.content, 'html.parser')
-items = soup.find_all('div', class_="thumbnail")
+for typ in types:
 
-for item in items:
-    price = item.find(class_="price").text[1:]
-    title = item.find('a')['title']
-    description = item.find('p', class_='description').text
+    allinone_response = requests.get('https://www.webscraper.io/test-sites/e-commerce/allinone/'+files[typ])
+    soup = BeautifulSoup(allinone_response.content, 'html.parser')
+    items = soup.find_all('div', class_="thumbnail")
 
-    scrapped_list.append({
-        "type": "computer",
-        "title":title,
-        "price": price,
-        "description": description
-        })
-print(scrapped_list)
+    for item in items:
+        price = item.find(class_="price").text[1:]
+        title = item.find('a')['title']
+
+        scrapped_list.append({
+            "type": typ,
+            "title":title,
+            "price": price
+            })
+
+sheet = pe.get_sheet(records = scrapped_list)
+save_data("scrap.ods",sheet)
+#save_data("your_file.ods", sheet)
+print(sheet)
