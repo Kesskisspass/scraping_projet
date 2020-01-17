@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 
 types = ['laptops','laptops','touch']
-files = {'laptops':'computers/laptops','laptops':'computers/tablets','touch':'phones/touch'}
+files = {'laptops':'computers/laptops','tablets':'computers/tablets','touch':'phones/touch'}
 items_lists = []
 for typ in types:
 
