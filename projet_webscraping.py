@@ -2,15 +2,16 @@
 # Projet WebScraping
 #
 
+# Import des plugins nécessaires
 import requests
 import pyexcel as pe
 from pyexcel_ods3 import save_data
 from bs4 import BeautifulSoup
 
-scrapped_list = []
+
 types = ['laptops','laptops','touch']
 files = {'laptops':'computers/laptops','laptops':'computers/tablets','touch':'phones/touch'}
-
+items_lists = []
 for typ in types:
 
     allinone_response = requests.get('https://www.webscraper.io/test-sites/e-commerce/allinone/'+files[typ])
@@ -21,13 +22,9 @@ for typ in types:
         price = item.find(class_="price").text[1:]
         title = item.find('a')['title']
 
-        scrapped_list.append({
-            "type": typ,
-            "title":title,
-            "price": price
-            })
+        items_lists.append([typ,title,price])
 
-sheet = pe.get_sheet(records = scrapped_list)
-save_data("scrap.ods",sheet)
-#save_data("your_file.ods", sheet)
-print(sheet)
+#print(items_lists)
+
+save_data("scrap.ods", {"Feuille 1" :items_lists})
+
